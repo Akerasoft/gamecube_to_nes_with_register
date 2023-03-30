@@ -1,5 +1,13 @@
 # Gamecube controller to NES adapter firmware
 
+## Please note that this is changed to support a 4021 register
+
+* More accurate reading by NES
+
+# Changes (C) Akerasoft 2023
+
+* Programmer for Akerasoft is Robert Kolski
+
 This is a project to control our good old NES with a controller that came out 15 years later...
 
 ## Features
@@ -17,6 +25,9 @@ Schematic and additional information are available on the project homepage:
 * French: [Adaptateur manette Gamecube à NES](http://www.raphnet.net/electronique/gc_to_nes/index.php)
 
 ## Release History
+
+* March 30, 2023: Version 1.3
+  * Uses 4021 register.
 
 * October 23, 2016 : Version 1.2
   * Updated gamecube IO code (transplanted from gcn64usb v2.9.2). Fixes some compatibility issues.
