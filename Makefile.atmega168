@@ -1,0 +1,40 @@
+CC=avr-gcc
+AS=$(CC)
+LD=$(CC)
+
+CPU=atmega168
+CFLAGS=-Wall -mmcu=$(CPU) -DF_CPU=12000000L -Os
+LDFLAGS=-mmcu=$(CPU) -Wl,-Map=gc_to_nes.map
+HEXFILE=gc_to_nes.hex
+AVRDUDE=avrdude -p m168 -P usb -c avrispmkII
+
+OBJS=main.o gcn64_protocol.o gamecube.o support.o sync.o
+
+all: $(HEXFILE)
+
+clean:
+	rm -f gc_to_nes.elf gc_to_nes.hex gc_to_nes.map $(OBJS)
+
+gc_to_nes.elf: $(OBJS)
+	$(LD) $(OBJS) $(LDFLAGS) -o gc_to_nes.elf
+
+gc_to_nes.hex: gc_to_nes.elf
+	avr-objcopy -j .data -j .text -O ihex gc_to_nes.elf gc_to_nes.hex
+	avr-size gc_to_nes.elf
+
+
+EFUSE=0x01
+HFUSE=0xD5
+LFUSE=0xD7
+
+fuse:
+	$(AVRDUDE) -e -Uefuse:w:$(EFUSE):m -Uhfuse:w:$(HFUSE):m -Ulfuse:w:$(LFUSE):m -B 20.0 -v
+
+flash: $(HEXFILE)
+	$(AVRDUDE) -Uflash:w:$(HEXFILE) -B 5.0 -F
+	
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
+
+%.o: %.S
+	$(CC) $(CFLAGS) -c $<
